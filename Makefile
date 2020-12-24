@@ -58,16 +58,16 @@ project:
 component: project
 	@test $${comp_name?Please set environment variable "comp_name" ("make component comp_name=compfoo")}
 	mkdir -p components/$(comp_name)
-	test -f config/components/$(comp_name).tfvars || touch config/components/$(comp_name).tfvars
-	test -f components/$(comp_name)/main.tf || touch components/$(comp_name)/main.tf
-	test -f components/$(comp_name)/outputs.tf || touch components/$(comp_name)/outputs.tf
-	test -f components/$(comp_name)/secrets.tf || touch components/$(comp_name)/secrets.tf
-	test -f components/$(comp_name)/security.tf || touch components/$(comp_name)/security.tf
-	test -f components/$(comp_name)/variables.tf || touch components/$(comp_name)/variables.tf
+	@test -f config/components/$(comp_name).tfvars || touch config/components/$(comp_name).tfvars
+	@test -f components/$(comp_name)/main.tf || touch components/$(comp_name)/main.tf
+	@test -f components/$(comp_name)/outputs.tf || touch components/$(comp_name)/outputs.tf
+	@test -f components/$(comp_name)/secrets.tf || touch components/$(comp_name)/secrets.tf
+	@test -f components/$(comp_name)/security.tf || touch components/$(comp_name)/security.tf
+	@test -f components/$(comp_name)/variables.tf || touch components/$(comp_name)/variables.tf
 
 environment: project
 	@test $${env_name?Please set environment variable "env_name" ("make environment env_name=envfoo")}
-	test -f config/environments/$(env_name).tfvars || touch config/environments/$(env_name).tfvars
+	@test -f config/environments/$(env_name).tfvars || touch config/environments/$(env_name).tfvars
 
 
 # helper targets
