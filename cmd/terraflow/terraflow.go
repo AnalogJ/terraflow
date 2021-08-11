@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
+	applyAction "github.com/analogj/terraflow/pkg/actions/apply"
+	cleanAction "github.com/analogj/terraflow/pkg/actions/clean"
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
+	planAction "github.com/analogj/terraflow/pkg/actions/plan"
 	projectAction "github.com/analogj/terraflow/pkg/actions/project"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/analogj/terraflow/pkg/version"
@@ -149,6 +152,122 @@ OPTIONS:
 					&cli.StringFlag{
 						Name:     "environment",
 						Usage:    "specify the environment to use",
+						Required: true,
+					},
+				},
+			},
+			{
+				Name:  "clean",
+				Usage: "Clean a Terraflow working directory",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "init",
+					})
+
+					appConfig := config.New()
+
+					return cleanAction.Start(appLogger, appConfig)
+				},
+			},
+			{
+				Name:  "plan",
+				Usage: "Terraform Plan",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "plan",
+					})
+
+					appConfig := config.New()
+					appConfig.Set("component", c.String("component"))
+					appConfig.Set("environment", c.String("environment"))
+					appConfig.Set("target", c.String("target"))
+					appConfig.Set("var", c.StringSlice("var"))
+
+					return planAction.Start(appLogger, appConfig)
+				},
+
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "component",
+						Usage: "specify the component to use",
+
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "environment",
+						Usage:    "specify the environment to use",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "target",
+						Usage:    "specify the component to target",
+						Required: true,
+					},
+					&cli.StringSliceFlag{
+						Name:     "var",
+						Usage:    "key=value pairs to pass to terraform",
+						Required: true,
+					},
+				},
+			},
+			{
+				Name:  "apply",
+				Usage: "Terraform Apply",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "apply",
+					})
+
+					appConfig := config.New()
+					appConfig.Set("component", c.String("component"))
+					appConfig.Set("environment", c.String("environment"))
+					appConfig.Set("target", c.String("target"))
+					appConfig.Set("var", c.StringSlice("var"))
+
+					return applyAction.Start(appLogger, appConfig)
+				},
+
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "component",
+						Usage: "specify the component to use",
+
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "environment",
+						Usage:    "specify the environment to use",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "target",
+						Usage:    "specify the component to target",
+						Required: true,
+					},
+					&cli.StringSliceFlag{
+						Name:     "var",
+						Usage:    "key=value pairs to pass to terraform",
 						Required: true,
 					},
 				},
