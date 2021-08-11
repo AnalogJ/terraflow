@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
-	"github.com/analogj/terraflow/pkg/actions/init"
-	"github.com/analogj/terraflow/pkg/actions/project"
+	initAction "github.com/analogj/terraflow/pkg/actions/init"
+	projectAction "github.com/analogj/terraflow/pkg/actions/project"
+	"github.com/analogj/terraflow/pkg/config"
 	"github.com/analogj/terraflow/pkg/version"
 	"github.com/fatih/color"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
 	"time"
@@ -87,13 +88,21 @@ OPTIONS:
 				//UsageText:   "doo - does the dooing",
 				Action: func(c *cli.Context) error {
 					fmt.Fprintln(c.App.Writer, c.Command.Usage)
-					if c.Bool("debug") {
-						log.SetLevel(log.DebugLevel)
-					} else {
-						log.SetLevel(log.InfoLevel)
-					}
 
-					return project.Start(c.String("component"), c.String("environment"))
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "project",
+					})
+
+					appConfig := config.New()
+					appConfig.Set("component", c.String("component"))
+					appConfig.Set("environment", c.String("environment"))
+
+					return projectAction.Start(appLogger, appConfig)
 				},
 
 				Flags: []cli.Flag{
@@ -113,13 +122,21 @@ OPTIONS:
 				Usage: "Initialize a Terraflow working directory",
 				Action: func(c *cli.Context) error {
 					fmt.Fprintln(c.App.Writer, c.Command.Usage)
-					if c.Bool("debug") {
-						log.SetLevel(log.DebugLevel)
-					} else {
-						log.SetLevel(log.InfoLevel)
-					}
 
-					return init.Start(c.String("component"), c.String("environment"))
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "init",
+					})
+
+					appConfig := config.New()
+					appConfig.Set("component", c.String("component"))
+					appConfig.Set("environment", c.String("environment"))
+
+					return initAction.Start(appLogger, appConfig)
 				},
 
 				Flags: []cli.Flag{
@@ -141,7 +158,7 @@ OPTIONS:
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(color.HiRedString("ERROR: %v", err))
+		logrus.Fatal(color.HiRedString("ERROR: %v", err))
 	}
 
 }

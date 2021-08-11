@@ -2,10 +2,12 @@ package project
 
 import (
 	"fmt"
+	"github.com/analogj/terraflow/pkg/config"
+	"github.com/sirupsen/logrus"
 	"os"
 )
 
-func Start(componentName string, environmentName string) error {
+func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	err := os.MkdirAll("config/environments", os.ModePerm)
 	if err != nil {
 		return err
@@ -18,6 +20,9 @@ func Start(componentName string, environmentName string) error {
 	if err != nil {
 		return err
 	}
+
+	environmentName := configuration.GetString("environment")
+	componentName := configuration.GetString("component")
 
 	if len(environmentName) > 0 {
 		_, err = os.OpenFile(fmt.Sprintf("config/environments/%s.tfvars", environmentName), os.O_RDONLY|os.O_CREATE, os.ModePerm)
