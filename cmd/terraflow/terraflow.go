@@ -5,7 +5,9 @@ import (
 	"github.com/analogj/go-util/utils"
 	applyAction "github.com/analogj/terraflow/pkg/actions/apply"
 	cleanAction "github.com/analogj/terraflow/pkg/actions/clean"
+	destroyAction "github.com/analogj/terraflow/pkg/actions/destroy"
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
+	outputAction "github.com/analogj/terraflow/pkg/actions/output"
 	planAction "github.com/analogj/terraflow/pkg/actions/plan"
 	projectAction "github.com/analogj/terraflow/pkg/actions/project"
 	"github.com/analogj/terraflow/pkg/config"
@@ -270,6 +272,74 @@ OPTIONS:
 						Usage:    "key=value pairs to pass to terraform",
 						Required: true,
 					},
+				},
+			},
+			{
+				Name:  "destroy",
+				Usage: "Terraform Destroy",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "destroy",
+					})
+
+					appConfig := config.New()
+					appConfig.Set("component", c.String("component"))
+					appConfig.Set("environment", c.String("environment"))
+					appConfig.Set("target", c.String("target"))
+					appConfig.Set("var", c.StringSlice("var"))
+
+					return destroyAction.Start(appLogger, appConfig)
+				},
+
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "component",
+						Usage: "specify the component to use",
+
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "environment",
+						Usage:    "specify the environment to use",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "target",
+						Usage:    "specify the component to target",
+						Required: true,
+					},
+					&cli.StringSliceFlag{
+						Name:     "var",
+						Usage:    "key=value pairs to pass to terraform",
+						Required: true,
+					},
+				},
+			},
+
+			{
+				Name:  "output",
+				Usage: "Terraform Output",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "output",
+					})
+
+					appConfig := config.New()
+					return outputAction.Start(appLogger, appConfig)
 				},
 			},
 		},

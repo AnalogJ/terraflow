@@ -18,4 +18,5 @@ type Interface interface {
 	UnmarshalKey(key string, rawVal interface{}, decoder ...viper.DecoderConfigOption) error
 
 	BackendConfig() (map[string]string, error)
+	GetComponentFolder() (string, error)
 }

@@ -3,22 +3,16 @@ package init
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
-	"github.com/analogj/terraflow/pkg"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/sirupsen/logrus"
-	"path"
 )
 
 func Start(logger logrus.FieldLogger, configuration config.Interface) error {
-	//environmentName := configuration.GetString("environment")
-	componentName := configuration.GetString("component")
-
 	logger.Info("init terraform project")
 
-	terraformPath := path.Join("components", componentName)
-
-	if !pkg.FolderExists(terraformPath) {
-		return fmt.Errorf("component directory is missing: %s", terraformPath)
+	terraformPath, err := configuration.GetComponentFolder()
+	if err != nil {
+		return err
 	}
 
 	// run the terraform commands necessary.

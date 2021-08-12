@@ -3,13 +3,11 @@ package plan
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
-	"github.com/analogj/terraflow/pkg"
 	cleanAction "github.com/analogj/terraflow/pkg/actions/clean"
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/sirupsen/logrus"
 	"os"
-	"path"
 )
 
 func Start(logger logrus.FieldLogger, configuration config.Interface) error {
@@ -25,10 +23,9 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	logger.Infof("plan '%s' component in '%s' environment", configuration.GetString("component"), configuration.GetString("environment"))
 
-	terraformPath := path.Join("components", configuration.GetString("component"))
-
-	if !pkg.FolderExists(terraformPath) {
-		return fmt.Errorf("component directory is missing: %s", terraformPath)
+	terraformPath, err := configuration.GetComponentFolder()
+	if err != nil {
+		return err
 	}
 
 	tfPlanPath := fmt.Sprintf(".tfplan/%s-%s.tfplan", configuration.GetString("environment"), configuration.GetString("component"))

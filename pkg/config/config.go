@@ -3,7 +3,9 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"github.com/analogj/terraflow/pkg"
 	"github.com/spf13/viper"
+	"path"
 	"strings"
 	"text/template"
 )
@@ -48,4 +50,17 @@ func (c *configuration) BackendConfig() (map[string]string, error) {
 		}
 	}
 	return backendConfig, nil
+}
+
+func (c *configuration) GetComponentFolder() (string, error) {
+	if !c.IsSet("component") {
+		return "", fmt.Errorf("no component set")
+	}
+
+	terraformPath := path.Join("components", c.GetString("component"))
+
+	if !pkg.FolderExists(terraformPath) {
+		return "", fmt.Errorf("component directory is missing: %s", terraformPath)
+	}
+	return terraformPath, nil
 }

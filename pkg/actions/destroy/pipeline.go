@@ -1,4 +1,4 @@
-package apply
+package destroy
 
 import (
 	"fmt"
@@ -20,16 +20,16 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		return err
 	}
 
-	logger.Infof("apply '%s' component in '%s' environment", configuration.GetString("component"), configuration.GetString("environment"))
+	logger.Infof("destroy '%s' component in '%s' environment", configuration.GetString("component"), configuration.GetString("environment"))
 
 	terraformPath, err := configuration.GetComponentFolder()
 	if err != nil {
 		return err
 	}
 
-	cmdApply := []string{
-		"terraform", "apply",
-		"-input=false",
+	cmdDestroy := []string{
+		"terraform",
+		"destroy",
 		"-no-color",
 		fmt.Sprintf("-var-file=config/environments/%s.tfvars", configuration.GetString("environment")),
 		fmt.Sprintf("-var-file=config/components/%s.tfvars", configuration.GetString("component")),
@@ -37,15 +37,14 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	if configuration.IsSet("var") {
 		for _, val := range configuration.GetStringSlice("var") {
-			cmdApply = append(cmdApply, fmt.Sprintf("-var='%s'", val))
+			cmdDestroy = append(cmdDestroy, fmt.Sprintf("-var='%s'", val))
 		}
 	}
 
 	if configuration.IsSet("target") {
-		cmdApply = append(cmdApply, []string{"-target", configuration.GetString("target")}...)
+		cmdDestroy = append(cmdDestroy, []string{"-target", configuration.GetString("target")}...)
 	}
 
-	cmdApply = append(cmdApply, terraformPath)
-
-	return utils.CmdExec(cmdApply[0], cmdApply[1:], "", []string{}, "--> ")
+	cmdDestroy = append(cmdDestroy, terraformPath)
+	return utils.CmdExec(cmdDestroy[0], cmdDestroy[1:], "", []string{}, "--> ")
 }
