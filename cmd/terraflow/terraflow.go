@@ -217,12 +217,12 @@ OPTIONS:
 					&cli.StringFlag{
 						Name:     "target",
 						Usage:    "specify the component to target",
-						Required: true,
+						Required: false,
 					},
 					&cli.StringSliceFlag{
 						Name:     "var",
 						Usage:    "key=value pairs to pass to terraform",
-						Required: true,
+						Required: false,
 					},
 				},
 			},
@@ -265,12 +265,12 @@ OPTIONS:
 					&cli.StringFlag{
 						Name:     "target",
 						Usage:    "specify the component to target",
-						Required: true,
+						Required: false,
 					},
 					&cli.StringSliceFlag{
 						Name:     "var",
 						Usage:    "key=value pairs to pass to terraform",
-						Required: true,
+						Required: false,
 					},
 				},
 			},
@@ -313,12 +313,12 @@ OPTIONS:
 					&cli.StringFlag{
 						Name:     "target",
 						Usage:    "specify the component to target",
-						Required: true,
+						Required: false,
 					},
 					&cli.StringSliceFlag{
 						Name:     "var",
 						Usage:    "key=value pairs to pass to terraform",
-						Required: true,
+						Required: false,
 					},
 				},
 			},
