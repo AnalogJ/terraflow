@@ -1,6 +1,8 @@
 # terraflow
 
-Terraflow generates the following folder structure 
+Opinionated configuration management for Terraform
+
+Terraflow expects (& can generate) the following component/application folder structure.
 
 ```
 config/
