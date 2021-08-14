@@ -194,9 +194,12 @@ OPTIONS:
 					appConfig := config.New()
 					appConfig.Set("component", c.String("component"))
 					appConfig.Set("environment", c.String("environment"))
-					appConfig.Set("target", c.String("target"))
-					appConfig.Set("var", c.StringSlice("var"))
-
+					if c.IsSet("target") {
+						appConfig.Set("target", c.String("target"))
+					}
+					if c.IsSet("var") {
+						appConfig.Set("var", c.StringSlice("var"))
+					}
 					return planAction.Start(appLogger, appConfig)
 				},
 
@@ -242,8 +245,12 @@ OPTIONS:
 					appConfig := config.New()
 					appConfig.Set("component", c.String("component"))
 					appConfig.Set("environment", c.String("environment"))
-					appConfig.Set("target", c.String("target"))
-					appConfig.Set("var", c.StringSlice("var"))
+					if c.IsSet("target") {
+						appConfig.Set("target", c.String("target"))
+					}
+					if c.IsSet("var") {
+						appConfig.Set("var", c.StringSlice("var"))
+					}
 
 					return applyAction.Start(appLogger, appConfig)
 				},
@@ -290,8 +297,12 @@ OPTIONS:
 					appConfig := config.New()
 					appConfig.Set("component", c.String("component"))
 					appConfig.Set("environment", c.String("environment"))
-					appConfig.Set("target", c.String("target"))
-					appConfig.Set("var", c.StringSlice("var"))
+					if c.IsSet("target") {
+						appConfig.Set("target", c.String("target"))
+					}
+					if c.IsSet("var") {
+						appConfig.Set("var", c.StringSlice("var"))
+					}
 
 					return destroyAction.Start(appLogger, appConfig)
 				},
