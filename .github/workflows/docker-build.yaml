@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '36 12 * * *'
   push:
-    branches: [ master, influxdb ]
+    branches: [ master ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
 
@@ -37,7 +37,7 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           tags: |
-            type=ref,enable=true,event=branch,suffix=-collector
+            type=ref,enable=true,event=branch
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       # Build and push Docker image with Buildx (don't push on PR)
