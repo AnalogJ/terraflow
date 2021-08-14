@@ -36,6 +36,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	}
 	cmdInit = append(cmdInit, terraformPath)
 
-	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", []string{}, "--> ")
+	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", nil, "--> ")
 
 }

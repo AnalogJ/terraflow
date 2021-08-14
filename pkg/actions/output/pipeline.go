@@ -11,12 +11,12 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	logger.Info("outputs for local terraform.tfstate file")
 
 	// run the terraform commands necessary.
-	cmdInit := []string{
+	cmdOutput := []string{
 		"terraform", "output",
 		"-no-color",
 		"-json",
 	}
 
-	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", []string{}, "--> ")
+	return utils.CmdExec(cmdOutput[0], cmdOutput[1:], "", nil, "--> ")
 
 }
