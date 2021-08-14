@@ -5,6 +5,7 @@ import (
 	"github.com/analogj/go-util/utils"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 func Start(logger logrus.FieldLogger, configuration config.Interface) error {
@@ -36,6 +37,7 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	}
 	cmdInit = append(cmdInit, terraformPath)
 
+	logger.Debugf("Cmd: %s", strings.Join(cmdInit, " "))
 	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", nil, "--> ")
 
 }

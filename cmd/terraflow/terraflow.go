@@ -74,17 +74,15 @@ OPTIONS:
 			return nil
 		},
 		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:    "log-level",
-				Usage:   "specify the log level",
-				Value:   "INFO",
-				EnvVars: []string{"TF_LOG"},
+			&cli.BoolFlag{
+				Name:  "debug",
+				Value: false,
 			},
-			&cli.StringFlag{
-				Name:    "state-bucket-name",
-				Usage:   "provide the bucket name where terraform state is stored. Required for all components, excluding 'bootstrap'",
-				EnvVars: []string{"_STATE_BUCKET_NAME"},
-			},
+			//&cli.StringFlag{
+			//	Name:    "state-bucket-name",
+			//	Usage:   "provide the bucket name where terraform state is stored. Required for all components, excluding 'bootstrap'",
+			//	EnvVars: []string{"_STATE_BUCKET_NAME"},
+			//},
 		},
 		Commands: []*cli.Command{
 			{

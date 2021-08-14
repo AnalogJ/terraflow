@@ -7,6 +7,7 @@ import (
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 func Start(logger logrus.FieldLogger, configuration config.Interface) error {
@@ -47,5 +48,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	cmdApply = append(cmdApply, terraformPath)
 
+	logger.Debugf("Cmd: %s", strings.Join(cmdApply, " "))
 	return utils.CmdExec(cmdApply[0], cmdApply[1:], "", nil, "--> ")
 }
