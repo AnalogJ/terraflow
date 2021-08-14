@@ -1,3 +1,6 @@
 terraflow-darwin-amd64
 terraflow-linux-amd64
-
+vendor
+config/
+components/
+.idea/
