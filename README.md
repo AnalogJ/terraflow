@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/AnalogJ/terraflow">
-  <img width="300" alt="drawbridge_view" src="https://rawgit.com/AnalogJ/terraflow/master/docs/logo.png">
+  <img width="300" alt="drawbridge_view" src="https://github.com/AnalogJ/terraflow/raw/main/docs/logo.png">
   </a>
 </p>
 
