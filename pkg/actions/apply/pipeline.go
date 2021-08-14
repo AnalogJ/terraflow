@@ -48,6 +48,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	cmdApply = append(cmdApply, terraformPath)
 
-	logger.Debugf("Cmd: %s", strings.Join(cmdApply, " "))
+	logger.Infof("Terraform Cmd: %s", strings.Join(cmdApply, " "))
 	return utils.CmdExec(cmdApply[0], cmdApply[1:], "", nil, "--> ")
 }

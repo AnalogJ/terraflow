@@ -18,7 +18,7 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		"-json",
 	}
 
-	logger.Debugf("Cmd: %s", strings.Join(cmdOutput, " "))
+	logger.Infof("Terraform Cmd: %s", strings.Join(cmdOutput, " "))
 	return utils.CmdExec(cmdOutput[0], cmdOutput[1:], "", nil, "--> ")
 
 }
