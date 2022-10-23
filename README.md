@@ -8,6 +8,10 @@
 
 Opinionated configuration management for Terraform
 
+```
+go install github.com/analogj/terraflow/cmd/terraflow@latest
+```
+
 Terraflow expects (& can generate) the following component/application folder structure.
 
 ```
