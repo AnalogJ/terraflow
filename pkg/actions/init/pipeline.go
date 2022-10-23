@@ -20,7 +20,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	cmdInit := []string{
 		"terraform", "init",
 		"-force-copy",
-		"-get-plugins=true",
 		"-input=false",
 	}
 
