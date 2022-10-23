@@ -3,6 +3,7 @@ package destroy
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
+	"github.com/analogj/terraflow/pkg"
 	cleanAction "github.com/analogj/terraflow/pkg/actions/clean"
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
 	"github.com/analogj/terraflow/pkg/config"
@@ -30,11 +31,16 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	cmdDestroy := []string{
 		"terraform",
+		fmt.Sprintf("-chdir=%s", terraformPath),
 		"destroy",
 		"-no-color",
-		fmt.Sprintf("-var-file=config/environments/%s.tfvars", configuration.GetString("environment")),
-		fmt.Sprintf("-var-file=config/components/%s.tfvars", configuration.GetString("component")),
 	}
+
+	tfVars, err := pkg.TFVarFiles(configuration.GetString("environment"), configuration.GetString("component"))
+	if err != nil {
+		return err
+	}
+	cmdDestroy = append(cmdDestroy, tfVars...)
 
 	if configuration.IsSet("var") {
 		for _, val := range configuration.GetStringSlice("var") {
@@ -45,8 +51,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	if configuration.IsSet("target") {
 		cmdDestroy = append(cmdDestroy, []string{"-target", configuration.GetString("target")}...)
 	}
-
-	cmdDestroy = append(cmdDestroy, terraformPath)
 
 	logger.Infof("Terraform Cmd: %s", strings.Join(cmdDestroy, " "))
 	return utils.CmdExec(cmdDestroy[0], cmdDestroy[1:], "", nil, "--> ")

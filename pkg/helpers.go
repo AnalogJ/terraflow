@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -28,4 +29,20 @@ func FolderExists(pathFolder string) bool {
 	}
 
 	return true
+}
+
+func TFVarFiles(envName string, compName string) ([]string, error) {
+	envTFvars, err := filepath.Abs(fmt.Sprintf("config/environments/%s.tfvars", envName))
+	if err != nil {
+		return nil, err
+	}
+	compTfvars, err := filepath.Abs(fmt.Sprintf("config/components/%s.tfvars", compName))
+	if err != nil {
+		return nil, err
+	}
+
+	return []string{
+		fmt.Sprintf("-var-file=%s", envTFvars),
+		fmt.Sprintf("-var-file=%s", compTfvars),
+	}, nil
 }

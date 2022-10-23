@@ -3,6 +3,7 @@ package apply
 import (
 	"fmt"
 	"github.com/analogj/go-util/utils"
+	"github.com/analogj/terraflow/pkg"
 	cleanAction "github.com/analogj/terraflow/pkg/actions/clean"
 	initAction "github.com/analogj/terraflow/pkg/actions/init"
 	"github.com/analogj/terraflow/pkg/config"
@@ -27,14 +28,19 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	if err != nil {
 		return err
 	}
-
 	cmdApply := []string{
-		"terraform", "apply",
+		"terraform",
+		fmt.Sprintf("-chdir=%s", terraformPath),
+		"apply",
 		"-input=false",
 		"-no-color",
-		fmt.Sprintf("-var-file=config/environments/%s.tfvars", configuration.GetString("environment")),
-		fmt.Sprintf("-var-file=config/components/%s.tfvars", configuration.GetString("component")),
 	}
+
+	tfVars, err := pkg.TFVarFiles(configuration.GetString("environment"), configuration.GetString("component"))
+	if err != nil {
+		return err
+	}
+	cmdApply = append(cmdApply, tfVars...)
 
 	if configuration.IsSet("var") {
 		for _, val := range configuration.GetStringSlice("var") {
@@ -45,8 +51,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	if configuration.IsSet("target") {
 		cmdApply = append(cmdApply, []string{"-target", configuration.GetString("target")}...)
 	}
-
-	cmdApply = append(cmdApply, terraformPath)
 
 	logger.Infof("Terraform Cmd: %s", strings.Join(cmdApply, " "))
 	return utils.CmdExec(cmdApply[0], cmdApply[1:], "", nil, "--> ")

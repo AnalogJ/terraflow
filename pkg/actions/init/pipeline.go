@@ -18,7 +18,9 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 
 	// run the terraform commands necessary.
 	cmdInit := []string{
-		"terraform", "init",
+		"terraform",
+		fmt.Sprintf("-chdir=%s", terraformPath),
+		"init",
 		"-force-copy",
 		"-input=false",
 	}
@@ -34,7 +36,6 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 			cmdInit = append(cmdInit, fmt.Sprintf("-backend-config=\"%s=%s\"", key, val))
 		}
 	}
-	cmdInit = append(cmdInit, terraformPath)
 
 	logger.Infof("Terraform Cmd: %s", strings.Join(cmdInit, " "))
 	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", nil, "--> ")
