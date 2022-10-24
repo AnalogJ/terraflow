@@ -34,6 +34,7 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		"apply",
 		"-input=false",
 		"-no-color",
+		"-auto-approve",
 	}
 
 	tfVars, err := pkg.TFVarFiles(configuration.GetString("environment"), configuration.GetString("component"))
