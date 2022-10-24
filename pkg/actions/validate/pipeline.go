@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 func Start(logger logrus.FieldLogger, configuration config.Interface) error {
@@ -29,6 +30,8 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 			"validate",
 			"-no-color",
 		}
+
+		logger.Infof("Terraform Cmd: %s", strings.Join(cmdValidate, " "))
 		err := utils.CmdExec(cmdValidate[0], cmdValidate[1:], "", nil, "--> ")
 		if err != nil {
 			return fmt.Errorf("an error occurred validating %s: %w", file.Name(), err)
