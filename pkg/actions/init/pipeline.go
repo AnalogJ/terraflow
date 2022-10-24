@@ -39,6 +39,8 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 			return err
 		}
 		defer os.Remove(backendConfigFile.Name())
+		backendConfig["key"] = fmt.Sprintf("terraform/%s/%s-state/terraform.tfstate", configuration.GetString("environment"), configuration.GetString("component"))
+
 		for key, val := range backendConfig {
 			backendConfigFile.WriteString(fmt.Sprintf("%s = \"%s\"\n", key, val))
 		}
