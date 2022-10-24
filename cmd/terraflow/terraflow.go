@@ -10,6 +10,7 @@ import (
 	outputAction "github.com/analogj/terraflow/pkg/actions/output"
 	planAction "github.com/analogj/terraflow/pkg/actions/plan"
 	projectAction "github.com/analogj/terraflow/pkg/actions/project"
+	validateAction "github.com/analogj/terraflow/pkg/actions/validate"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/analogj/terraflow/pkg/version"
 	"github.com/fatih/color"
@@ -349,6 +350,25 @@ OPTIONS:
 
 					appConfig := config.New()
 					return outputAction.Start(appLogger, appConfig)
+				},
+			},
+			{
+				Name:  "validate",
+				Usage: "Terraform validate",
+				Action: func(c *cli.Context) error {
+					fmt.Fprintln(c.App.Writer, c.Command.Usage)
+
+					if c.Bool("debug") {
+						logrus.SetLevel(logrus.DebugLevel)
+					} else {
+						logrus.SetLevel(logrus.InfoLevel)
+					}
+					appLogger := logrus.WithFields(logrus.Fields{
+						"type": "validate",
+					})
+
+					appConfig := config.New()
+					return validateAction.Start(appLogger, appConfig)
 				},
 			},
 		},
