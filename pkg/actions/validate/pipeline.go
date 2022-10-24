@@ -24,6 +24,19 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		}
 
 		log.Printf("validating component %s:", file.Name())
+		cmdInit := []string{
+			"terraform",
+			fmt.Sprintf("-chdir=%s", filepath.Join(baseDir, file.Name())),
+			"init",
+			"-backend=false",
+			"-no-color",
+		}
+		logger.Infof("Terraform Cmd: %s", strings.Join(cmdInit, " "))
+		err := utils.CmdExec(cmdInit[0], cmdInit[1:], "", nil, "--> ")
+		if err != nil {
+			return fmt.Errorf("an error occurred validating %s: %w", file.Name(), err)
+		}
+
 		cmdValidate := []string{
 			"terraform",
 			fmt.Sprintf("-chdir=%s", filepath.Join(baseDir, file.Name())),
@@ -32,7 +45,7 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		}
 
 		logger.Infof("Terraform Cmd: %s", strings.Join(cmdValidate, " "))
-		err := utils.CmdExec(cmdValidate[0], cmdValidate[1:], "", nil, "--> ")
+		err = utils.CmdExec(cmdValidate[0], cmdValidate[1:], "", nil, "--> ")
 		if err != nil {
 			return fmt.Errorf("an error occurred validating %s: %w", file.Name(), err)
 		}
