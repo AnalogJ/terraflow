@@ -1,13 +1,12 @@
 package config
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/analogj/terraflow/pkg"
 	"github.com/spf13/viper"
+	"os"
 	"path"
 	"strings"
-	"text/template"
 )
 
 // When initializing this class the following methods must be called:
@@ -15,38 +14,36 @@ import (
 // Config.Init
 // This is done automatically when created via the Factory.
 
+type configuration struct {
+	*viper.Viper
+}
+
 func New() Interface {
 	newConfig := new(configuration)
 	newConfig.Init()
 	return newConfig
 }
 
-type configuration struct {
-	*viper.Viper
-}
-
 func (c *configuration) Init() {
 	c.Viper = viper.New()
+	c.SetEnvPrefix("TF")
+	c.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
+	c.AutomaticEnv()
 }
 
 func (c *configuration) BackendConfig() (map[string]string, error) {
 	backendConfig := map[string]string{}
 
-	for key, val := range c.AllSettings() {
-		if strings.HasPrefix(strings.ToLower(key), "backend_config") {
-			backendConfigKey := strings.TrimPrefix(strings.ToLower(key), "backend_config")
-			tmpl, err := template.New(fmt.Sprintf("templ_%s", key)).Parse(val.(string))
-			if err != nil {
-				return nil, err
-			}
+	for _, element := range os.Environ() {
+		variable := strings.Split(element, "=")
+		fmt.Println(variable[0], "=>", variable[1])
+	}
 
-			var populatedString bytes.Buffer
-			err = tmpl.Execute(&populatedString, c.AllSettings())
-			if err != nil {
-				return nil, err
-			}
-
-			backendConfig[backendConfigKey] = populatedString.String()
+	for _, envVarPair := range os.Environ() {
+		envVarParts := strings.SplitN(envVarPair, "=", 2)
+		if strings.HasPrefix(strings.ToLower(envVarParts[0]), "backend_config") && len(envVarParts) >= 2 {
+			backendConfigKey := strings.TrimPrefix(strings.ToLower(envVarParts[0]), "backend_config_")
+			backendConfig[backendConfigKey] = envVarParts[1]
 		}
 	}
 	return backendConfig, nil

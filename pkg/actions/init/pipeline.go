@@ -5,6 +5,8 @@ import (
 	"github.com/analogj/go-util/utils"
 	"github.com/analogj/terraflow/pkg/config"
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -31,13 +33,20 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 	}
 	if len(backendConfig) > 0 {
 		logger.Infof("Backend Configured: %v", backendConfig)
-		for key, val := range backendConfig {
-			cmdInit = append(cmdInit, "-backend=true")
-			cmdInit = append(cmdInit, fmt.Sprintf("-backend-config=\"%s=%s\"", key, val))
+
+		backendConfigFile, err := ioutil.TempFile("", "config.tfbackend")
+		if err != nil {
+			return err
 		}
+		defer os.Remove(backendConfigFile.Name())
+		for key, val := range backendConfig {
+			backendConfigFile.WriteString(fmt.Sprintf("%s = \"%s\"\n", key, val))
+		}
+
+		cmdInit = append(cmdInit, "-backend=true")
+		cmdInit = append(cmdInit, fmt.Sprintf("-backend-config=%s", backendConfigFile.Name()))
 	}
 
 	logger.Infof("Terraform Cmd: %s", strings.Join(cmdInit, " "))
 	return utils.CmdExec(cmdInit[0], cmdInit[1:], "", nil, "--> ")
-
 }
