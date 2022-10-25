@@ -34,6 +34,7 @@ func Start(logger logrus.FieldLogger, configuration config.Interface) error {
 		fmt.Sprintf("-chdir=%s", terraformPath),
 		"destroy",
 		"-no-color",
+		"-auto-approve",
 	}
 
 	tfVars, err := pkg.TFVarFiles(configuration.GetString("environment"), configuration.GetString("component"))
